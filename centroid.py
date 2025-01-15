@@ -1,11 +1,9 @@
 import json
 from geopy.distance import geodesic
 from scipy.spatial import ConvexHull
-from scipy.cluster.hierarchy import centroid
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from shapely.geometry import Polygon
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
