@@ -1,9 +1,10 @@
 import json
 from geopy.distance import geodesic
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from scipy.spatial import ConvexHull
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from itertools import combinations
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -41,6 +42,13 @@ def convert_to_field_coordinates(lat, lon, field):
     y = (lat - field["min_lat"]) / (field["max_lat"] - field["min_lat"]) * field["length"]
     return x, y
 
+def calculate_distances(points):
+    distances = []
+    for i, j in combinations(range(len(points)), 2):
+        distance = np.linalg.norm(points[i] - points[j])
+        distances.append(distance)
+    return np.mean(distances), np.median(distances)
+
 # Create a figure and axis
 fig, ax = plt.subplots(figsize=(10, 7))
 
@@ -54,10 +62,11 @@ def init():
 
     return []
 
-# Function to update the plot for each frame
+
 def update(frame_number):
     ax.clear()
     init()
+
     objects = data[str(frame_number)]
 
     points = []
@@ -67,39 +76,41 @@ def update(frame_number):
 
         ax.plot(x, y, 'o', color='red')
 
-        if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
+        if 0 <= x <= field["width"] and 0 <= y <= field["length"]:
             points.append([x, y])
 
-    # Draw the polygon by connecting the dots inside the field using the Convex Hull
+    # Calcula o polígono usando o ConvexHull
     if len(points) > 2:
         points = np.array(points)
         hull = ConvexHull(points)
         hull_points = points[hull.vertices]
 
-        polygon_area = hull.volume
+        # Obtém o centróide do polígono e as distancias dos pontos ao centroid
+        centroid = np.mean(points, axis=0)
+        distances_to_centroid = [np.linalg.norm(point - centroid) for point in points]
 
-        #obtem o vetor dos pontos ao centro (em andamento)
-        vtime = np.arange(0, len(x)) / float(1000)
-        vtime = vtime / 60
-
+        # Preenche o polígono com uma cor transparente
         ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
 
-        width = np.max(hull_points[:, 0]) - np.min(hull_points[:, 0])
-        length = np.max(hull_points[:, 1]) - np.min(hull_points[:, 1])
-        lpwratio = length / width
+        # Marca o centróide no gráfico
+        ax.plot(centroid[0], centroid[1], '*', color='blue', markersize=15, label='Centroid')
 
-        ax.text(2, field["width"] - 2, f'Surface Area: {polygon_area:.2f} m²', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f'Width: {width:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 8, f'Length: {length:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 11, f'LPWRatio: {lpwratio:.2f}', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
+        # Adicionar as linhas de distância dos jogadores ao centróide
+        for point in points:
+            ax.plot([point[0], centroid[0]], [point[1], centroid[1]], 'g--', linewidth=1)
+
+        # Adicionar as distâncias no gráfico
+        for point, distance in zip(points, distances_to_centroid):
+            ax.text(point[0], point[1], f'{distance:.2f} m', fontsize=8, color='black')
+
+
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
-
     return []
 
 # Create the animation
 #ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
 ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
-
+# = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=100)
 # Show the animation
 plt.grid(True)
 plt.show()
