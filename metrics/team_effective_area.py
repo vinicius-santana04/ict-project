@@ -4,7 +4,6 @@ from scipy.spatial import ConvexHull
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from itertools import combinations
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -42,13 +41,6 @@ def convert_to_field_coordinates(lat, lon, field):
     y = (lat - field["min_lat"]) / (field["max_lat"] - field["min_lat"]) * field["length"]
     return x, y
 
-def calculate_distances(points):
-    distances = []
-    for i, j in combinations(range(len(points)), 2):
-        distance = np.linalg.norm(points[i] - points[j])
-        distances.append(distance)
-    return np.mean(distances), np.median(distances)
-
 # Create a figure and axis
 fig, ax = plt.subplots(figsize=(10, 7))
 
@@ -73,8 +65,10 @@ def update(frame_number):
 
     for obj in objects:
         x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
+        num = obj.get('player')
 
         ax.plot(x, y, 'o', color='red')
+        ax.text(x, y, ("Player-" + num), fontsize=10, color='black', ha="left", va="bottom")
 
         if 0 <= x <= field["width"] and 0 <= y <= field["length"]:
             points.append([x, y])
@@ -85,31 +79,23 @@ def update(frame_number):
         hull = ConvexHull(points)
         hull_points = points[hull.vertices]
 
+        # Área do polígono com ConvexHull
+        polygon_area = hull.volume
 
-        # Obtém o centróide do polígono e as distancias dos pontos ao centroid
-        centroid = np.mean(points, axis=0)
-        distances_to_centroid = [np.linalg.norm(point - centroid) for point in points]
-
-        #obtém a media e a mediana das distancias
-        mean, median = calculate_distances(points)
+        # Obtém o centróide do polígono
+        centroid_x = np.mean(hull_points[:, 0])
+        centroid_y = np.mean(hull_points[:, 1])
 
         # Preenche o polígono com uma cor transparente
         ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
 
         # Marca o centróide no gráfico
-        ax.plot(centroid[0], centroid[1], '*', color='blue', markersize=15, label='Centroid')
+        ax.plot(centroid_x, centroid_y, '*', color='blue', markersize=10, label='Centroid')
 
-        # Adicionar as linhas de distância dos jogadores ao centróide
-        for point in points:
-            ax.plot([point[0], centroid[0]], [point[1], centroid[1]], 'g--', linewidth=1)
-
-        # Adicionar as distâncias no gráfico
-        for point, distance in zip(points, distances_to_centroid):
-            ax.text(point[0], point[1], f'{distance:.2f} m', fontsize=8, color='black')
-
-        ax.text(2, field["width"] - 2, f'Mean: {mean:.4f} m', fontsize=12, color='black',
+        # Adiciona as métricas ao gráfico
+        ax.text(2, field["width"] - 2, f'Surface Area: {polygon_area:.2f} m²', fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f'Median: {median:.4f} m', fontsize=12, color='black',
+        ax.text(2, field["width"] - 5, f'Centroid: ({centroid_x:.2f}, {centroid_y:.2f})', fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
 
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
