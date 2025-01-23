@@ -32,7 +32,7 @@ field["max_lon"] = max(longitudes)
 field["min_lon"] = min(longitudes)
 
 # Load your JSON data
-with open('../ict-project/data/result.json') as f:
+with open('../data/result.json') as f:
     data = json.load(f)
 
 def convert_to_field_coordinates(lat, lon, field):
@@ -63,7 +63,6 @@ def update(frame_number):
 
     points = []
 
-
     for obj in objects:
         x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
 
@@ -72,51 +71,38 @@ def update(frame_number):
         if 0 <= x <= field["width"] and 0 <= y <= field["length"]:
             points.append([x, y])
 
-
     # Calcula o polígono usando o ConvexHull
     if len(points) > 2:
         points = np.array(points)
         hull = ConvexHull(points)
         hull_points = points[hull.vertices]
 
+        # Área do polígono com ConvexHull
+        polygon_area = hull.volume
+
         # Obtém o centróide do polígono
         centroid_x = np.mean(hull_points[:, 0])
         centroid_y = np.mean(hull_points[:, 1])
 
-        # Comprimento e largura do polígono (dimensões máximas)
-        dist_comp = np.max(hull_points[:, 0]) - np.min(hull_points[:, 0])
-        dist_larg = np.max(hull_points[:, 1]) - np.min(hull_points[:, 1])
-
-        # Área do polígono com ConvexHull
-        polygon_area = hull.volume
-
-        # Desenha as bordas do polígono conectando os pontos do ConvexHull
-        for simplex in hull.simplices:
-            ax.plot(points[simplex, 0], points[simplex, 1], 'black', lw=1)
-
         # Preenche o polígono com uma cor transparente
-        #ax.plot(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
+        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
 
         # Marca o centróide no gráfico
         ax.plot(centroid_x, centroid_y, '*', color='blue', markersize=10, label='Centroid')
 
-        # Exibição das métricas no gráfico
-        ax.text(2, field["width"] - 2, f"Área Média: {polygon_area:.2f} m²", fontsize=12, color='black',
+        # Adiciona as métricas ao gráfico
+        ax.text(2, field["length"] - 2, f'Surface Area: {polygon_area:.2f} m²', fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f"Comprimento Médio: {dist_comp:.2f} m", fontsize=12, color='black',
-                bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 8, f"Largura Média: {dist_larg:.2f} m", fontsize=12, color='black',
-                bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 11, f'Centroid: ({centroid_x:.2f}, {centroid_y:.2f})', fontsize=12, color='black',
+        ax.text(2, field["length"] - 5, f'Centroid: ({centroid_x:.2f}, {centroid_y:.2f})', fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
 
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
     return []
 
 # Create the animation
+#ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
 ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
-
-
+# = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=100)
 # Show the animation
 plt.grid(True)
 plt.show()

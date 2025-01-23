@@ -1,9 +1,9 @@
 import json
 from geopy.distance import geodesic
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from scipy.spatial import ConvexHull
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -32,7 +32,7 @@ field["max_lon"] = max(longitudes)
 field["min_lon"] = min(longitudes)
 
 # Load your JSON data
-with open('../ict-project/data/result.json') as f:
+with open('../data/result.json') as f:
     data = json.load(f)
 
 def convert_to_field_coordinates(lat, lon, field):
@@ -54,7 +54,6 @@ def init():
 
     return []
 
-# Function to update the plot for each frame
 def update(frame_number):
     ax.clear()
     init()
@@ -68,33 +67,59 @@ def update(frame_number):
 
         ax.plot(x, y, 'o', color='red')
 
-        if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
+        if 0 <= x <= field["width"] and 0 <= y <= field["length"]:
             points.append([x, y])
 
-    # Draw the polygon by connecting the dots inside the field using the Convex Hull
+    # Calcula o polígono usando o ConvexHull
     if len(points) > 2:
         points = np.array(points)
+        num_players = points.shape[0]
+
+        #Matriz de distancias entre jogadores
+        dist_matrix = np.zeros((num_players, num_players - 1))
+        for w in range(num_players):
+            matXYPlay = points[w]
+            dres = []
+            for z in range(num_players):
+                if z != w:
+                    matcomp = points[z]
+                    dist = np.linalg.norm(matXYPlay - matcomp)
+                    dres.append(dist)
+            dist_matrix[w] = dres
+
+        spread = np.linalg.norm(dist_matrix, axis = 1)
+
+        spread_mean = np.mean(spread)
+        spread_median = np.median(spread)
+        std_spread = np.std(spread)
+
         hull = ConvexHull(points)
         hull_points = points[hull.vertices]
 
-        polygon_area = hull.volume
+        # Obtém o centróide do polígono
+        centroid_x = np.mean(hull_points[:, 0])
+        centroid_y = np.mean(hull_points[:, 1])
 
-        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
+        # Marca o centróide no gráfico
+        ax.plot(centroid_x, centroid_y, '*', color='blue', markersize=10, label='Centroid')
 
-        width = np.max(hull_points[:, 0]) - np.min(hull_points[:, 0])
-        length = np.max(hull_points[:, 1]) - np.min(hull_points[:, 1])
-        lpwratio = length / width
+        # Connecting Players
+        for i in range(num_players):
+            for j in range(i + 1, num_players):  # Apenas uma vez para cada par
+                ax.plot([points[i, 0], points[j, 0]], [points[i, 1], points[j, 1]], 'k--', linewidth=1)
 
-        ax.text(2, field["width"] - 2, f'Surface Area: {polygon_area:.2f} m²', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f'Width: {width:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 8, f'Length: {length:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 11, f'LPWRatio: {lpwratio:.2f}', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
+        # Exibição das métricas no gráfico
+        ax.text(2, field["width"] - 2, f"Spread Médio: {spread_mean:.2f}", fontsize=12, color='black',
+                bbox=dict(facecolor='white', alpha=0.7))
+        ax.text(2, field["width"] - 5, f"Spread Mediano: {spread_median:.2f}", fontsize=12, color='black',
+                bbox=dict(facecolor='white', alpha=0.7))
+        ax.text(2, field["width"] - 8, f"Desvio Padrão: {std_spread:.2f}", fontsize=12, color='black',
+                bbox=dict(facecolor='white', alpha=0.7))
+
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
-
     return []
 
 # Create the animation
-#ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
 ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
 
 # Show the animation
