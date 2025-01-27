@@ -32,7 +32,7 @@ field["max_lon"] = max(longitudes)
 field["min_lon"] = min(longitudes)
 
 # Load your JSON data
-with open('data/result.json') as f:
+with open('../data/result.json') as f:
     data = json.load(f)
 
 def convert_to_field_coordinates(lat, lon, field):
@@ -54,7 +54,6 @@ def init():
 
     return []
 
-
 def update(frame_number):
     ax.clear()
     init()
@@ -74,26 +73,47 @@ def update(frame_number):
     # Calcula o polígono usando o ConvexHull
     if len(points) > 2:
         points = np.array(points)
+        num_players = points.shape[0]
+
+        #Matriz de distancias entre jogadores
+        dist_matrix = np.zeros((num_players, num_players - 1))
+        for w in range(num_players):
+            matXYPlay = points[w]
+            dres = []
+            for z in range(num_players):
+                if z != w:
+                    matcomp = points[z]
+                    dist = np.linalg.norm(matXYPlay - matcomp)
+                    dres.append(dist)
+            dist_matrix[w] = dres
+
+        spread = np.linalg.norm(dist_matrix, axis = 1)
+
+        spread_mean = np.mean(spread)
+        spread_median = np.median(spread)
+        std_spread = np.std(spread)
+
         hull = ConvexHull(points)
         hull_points = points[hull.vertices]
-
-        # Área do polígono com ConvexHull
-        polygon_area = hull.volume
 
         # Obtém o centróide do polígono
         centroid_x = np.mean(hull_points[:, 0])
         centroid_y = np.mean(hull_points[:, 1])
 
-        # Preenche o polígono com uma cor transparente
-        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
-
         # Marca o centróide no gráfico
         ax.plot(centroid_x, centroid_y, '*', color='blue', markersize=10, label='Centroid')
 
-        # Adiciona as métricas ao gráfico
-        ax.text(2, field["length"] - 2, f'Surface Area: {polygon_area:.2f} m²', fontsize=12, color='black',
+        # Connecting Players
+        for i in range(num_players):
+            for j in range(i + 1, num_players):  # Apenas uma vez para cada par
+                ax.plot([points[i, 0], points[j, 0]], [points[i, 1], points[j, 1]], 'k--', linewidth=1)
+
+        # Exibição das métricas no gráfico
+        ax.text(2, field["width"] - 2, f"Spread Médio: {spread_mean:.2f}", fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["length"] - 5, f'Centroid: ({centroid_x:.2f}, {centroid_y:.2f})', fontsize=12, color='black',
+        ax.text(2, field["width"] - 5, f"Spread Mediano: {spread_median:.2f}", fontsize=12, color='black',
+                bbox=dict(facecolor='white', alpha=0.7))
+        ax.text(2, field["width"] - 8, f"Desvio Padrão: {std_spread:.2f}", fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
 
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
