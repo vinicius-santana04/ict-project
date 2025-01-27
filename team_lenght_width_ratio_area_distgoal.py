@@ -94,9 +94,6 @@ def update(frame_number):
         for simplex in hull.simplices:
             ax.plot(points[simplex, 0], points[simplex, 1], 'black', lw=1)
 
-        # Preenche o polígono com uma cor transparente
-        #ax.plot(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
-
         # Marca o centróide no gráfico
         ax.plot(centroid_x, centroid_y, '*', color='blue', markersize=10, label='Centroid')
 

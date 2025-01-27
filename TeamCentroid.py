@@ -32,7 +32,7 @@ field["max_lon"] = max(longitudes)
 field["min_lon"] = min(longitudes)
 
 # Load your JSON data
-with open('../metrics/Results2/result.json') as f:
+with open('data/result.json') as f:
     data = json.load(f)
 
 def convert_to_field_coordinates(lat, lon, field):
@@ -100,9 +100,8 @@ def update(frame_number):
     return []
 
 # Create the animation
-#ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
 ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
-# = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=100)
+
 # Show the animation
 plt.grid(True)
 plt.show()
