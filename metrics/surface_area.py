@@ -10,7 +10,7 @@ import numpy as np
 # Define your four corner points as (latitude, longitude)
 field = {
     #"corner1": (-20.127965, -40.304853),
-    #"corner2": (-20.128007, -40.303850),
+    #"corner2": (-20.128007, -40.3038>>source 50),
     #"corner3": (-20.127326, -40.304825),
     #"corner4": (-20.127381, -40.303826),
     "corner1": (20.127965, 40.304853),
