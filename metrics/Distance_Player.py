@@ -53,7 +53,6 @@ def init():
     ax.set_ylim(0, field["width"])
     ax.set_xlabel('X Position (meters)')
     ax.set_ylabel('Y Position (meters)')
-    ax.set_title('Football Field with Tracked Object Positions')
 
     return []
 
@@ -71,17 +70,23 @@ def update(frame_number):
         if player["player"] == "01":  # If the current player is "01"
             x, y = convert_to_field_coordinates(player.get('lat'), player.get('lon'), field)
             if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
-                if last_position:
+                if last_position != ():
                     total_distance +=  geodesic(last_position, (player.get('lat'), player.get('lon'))).meters
                     last_x, last_y = convert_to_field_coordinates(last_position[0], last_position[1], field)
-                    ax.plot([last_x, x], [last_y, y], 'o-', color='red')
+                    ax.plot([last_x, x], [last_y, y], 'k-', color='red')
 
                 last_position = (player.get('lat'), player.get('lon'))
+
+
+    ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
+    ax.text(2, field["width"] - 2, f'Total_Distance Player01: {total_distance:.2f}meters', fontsize=12, color='black',
+            bbox=dict(facecolor='white', alpha=0.7))
+
     return []
 
 # Create the animation
 #ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
-ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
+ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=0.00001)
 
 # Show the animation
 plt.grid(True)
