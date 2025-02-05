@@ -2,8 +2,6 @@ import json
 from geopy.distance import geodesic
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from scipy.spatial import ConvexHull
-import numpy as np
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -44,58 +42,51 @@ def convert_to_field_coordinates(lat, lon, field):
 # Create a figure and axis
 fig, ax = plt.subplots(figsize=(10, 7))
 
+#Global Variable by storage distance in meters
+total_distance = 0.0
+#Tuple by storage last position (gps)
+last_position = ()
+
 # Function to initialize the plot
 def init():
     ax.set_xlim(0, field["length"])
     ax.set_ylim(0, field["width"])
     ax.set_xlabel('X Position (meters)')
     ax.set_ylabel('Y Position (meters)')
-    ax.set_title('Football Field with Tracked Object Positions')
 
     return []
 
 # Function to update the plot for each frame
 def update(frame_number):
-    ax.clear()
+
+    global last_position
+    global total_distance
     init()
 
-    objects = data[str(frame_number)]
+    # Get players at this moment: frame_number
+    players = data[str(frame_number)]
 
-    points = []
+    for player in players:
+        if player["player"] == "01":  # If the current player is "01"
+            x, y = convert_to_field_coordinates(player.get('lat'), player.get('lon'), field)
+            if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
+                if last_position != ():
+                    total_distance +=  geodesic(last_position, (player.get('lat'), player.get('lon'))).meters
+                    last_x, last_y = convert_to_field_coordinates(last_position[0], last_position[1], field)
+                    ax.plot([last_x, x], [last_y, y], 'k-', color='red')
 
-    for obj in objects:
-        x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
+                last_position = (player.get('lat'), player.get('lon'))
 
-        ax.plot(x, y, 'o', color='red')
 
-        if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
-            points.append([x, y])
-
-    # Draw the polygon by connecting the dots inside the field using the Convex Hull
-    if len(points) > 2:
-        points = np.array(points)
-        hull = ConvexHull(points)
-        hull_points = points[hull.vertices]
-
-        polygon_area = hull.volume
-
-        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
-
-        width = np.max(hull_points[:, 0]) - np.min(hull_points[:, 0])
-        length = np.max(hull_points[:, 1]) - np.min(hull_points[:, 1])
-        lpwratio = length / width
-
-        ax.text(2, field["width"] - 2, f'Surface Area: {polygon_area:.2f} m²', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f'Width: {width:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 8, f'Length: {length:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 11, f'LPWRatio: {lpwratio:.2f}', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
+    ax.text(2, field["width"] - 2, f'Total_Distance Player01: {total_distance:.2f}meters', fontsize=12, color='black',
+            bbox=dict(facecolor='white', alpha=0.7))
 
     return []
 
 # Create the animation
 #ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
-ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
+ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=0.00001)
 
 # Show the animation
 plt.grid(True)
