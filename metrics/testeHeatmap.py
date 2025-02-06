@@ -1,14 +1,11 @@
 import json
 from geopy.distance import geodesic
-from scipy.spatial import ConvexHull
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from itertools import combinations
-
-from scipy.stats import alpha
-
-from fields import select_field
+from matplotlib.patches import Ellipse, Rectangle, Circle, Arc
+from scipy.ndimage import gaussian_filter
+from scipy.spatial import ConvexHull
+import numpy as np
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -46,13 +43,6 @@ def convert_to_field_coordinates(lat, lon, field):
     y = (lat - field["min_lat"]) / (field["max_lat"] - field["min_lat"]) * field["length"]
     return x, y
 
-def calculate_distances(points):
-    distances = []
-    for i, j in combinations(range(len(points)), 2):
-        distance = np.linalg.norm(points[i] - points[j])
-        distances.append(distance)
-    return np.mean(distances), np.median(distances)
-
 # Create a figure and axis
 fig, ax = plt.subplots(figsize=(10, 7))
 
@@ -66,11 +56,63 @@ def init():
 
     return []
 
+x_array = []
+y_array = []
 
+
+def draw_pitch(ax=None):
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(10, 7))
+
+    # Limites do campo
+    ax.set_xlim(0, 105)
+    ax.set_ylim(0, 68)
+
+    # Linhas principais do campo
+    ax.add_patch(Rectangle((0, 0), 105, 68, edgecolor="white", facecolor="none", lw=2))
+    ax.add_patch(Rectangle((0, 22.65), 16.5, 22.7, edgecolor="white", facecolor="none", lw=2))
+    ax.add_patch(Rectangle((105 - 16.5, 22.65), 16.5, 22.7, edgecolor="white", facecolor="none", lw=2))
+    ax.add_patch(Circle((52.5, 34), 9.15, edgecolor="white", facecolor="none", lw=2))
+    ax.add_patch(Rectangle((0, 30.34), 5.5, 7.32, edgecolor="white", facecolor="none", lw=2))
+    ax.add_patch(Rectangle((105 - 5.5, 30.34), 5.5, 7.32, edgecolor="white", facecolor="none", lw=2))
+    ax.add_patch(Circle((52.5, 34), 0.2, edgecolor="white", facecolor="white", lw=2))
+    ax.add_patch(Arc((11, 34), height=18.3, width=18.3, theta1=308, theta2=52, color="white", lw=2))
+    ax.add_patch(Arc((105 - 11, 34), height=18.3, width=18.3, theta1=128, theta2=232, color="white", lw=2))
+
+    # Centro do campo
+    ax.add_patch(Circle((52.5, 34), 0.2, edgecolor="white", facecolor="white", lw=2))
+    ax.add_patch(Circle((52.5, 34), 9.15, edgecolor="white", facecolor="none", lw=2))
+    ax.set_facecolor("green")
+    return ax
+
+
+# Function to update the plot for each frame
 def update(frame_number):
+
+    if frame_number == "17:55:00":
+        heatmap, xedges, yedges = np.histogram2d(x_array, y_array, bins=[50, 50], range=[[0, 105], [0, 68]])
+        heatmap = gaussian_filter(heatmap, sigma=2)  # Aplicar filtro gaussiano
+
+        # Plotar o campo e o heatmap
+        fig1, ax1 = plt.subplots(figsize=(10, 7))
+        #ax1 = draw_pitch(ax=ax1)
+
+        extent = [0, 105, 0, 68]
+        heatmap_img = ax1.imshow(heatmap.T, extent=extent, origin='lower', cmap='RdBu', vmin=-1, vmax=1, alpha=0.8)
+        cbar = plt.colorbar(heatmap_img, ax=ax1)
+        cbar.set_label("Intensidade")
+        ani = animation.FuncAnimation(fig1, update, data, init_func=init, blit=True, repeat=False, interval=100)
+
+        # Show the animation
+        plt.grid(True)
+        plt.show()
+        return [heatmap_img]
+
+
     ax.clear()
-    select_field(105, 71, ax)
     init()
+
+
 
     objects = data[str(frame_number)]
 
@@ -78,52 +120,33 @@ def update(frame_number):
 
     for obj in objects:
         x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
+        number_player = obj.get('player')
+        if number_player == '01':
+            x_array.append(x)
+            y_array.append(y)
 
         ax.plot(x, y, 'o', color='red')
+        ax.text(x, y, ("Player-" + number_player), fontsize=10, color='black', ha="left", va="bottom")
 
         if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
             points.append([x, y])
 
-    # Calcula o polígono usando o ConvexHull
+    # Draw the polygon by connecting the dots inside the field using the Convex Hull
     if len(points) > 2:
         points = np.array(points)
         hull = ConvexHull(points)
         hull_points = points[hull.vertices]
 
 
-        # Obtém o centróide do polígono e as distancias dos pontos ao centroid
-        centroid = np.mean(points, axis=0)
-        distances_to_centroid = [np.linalg.norm(point - centroid) for point in points]
-
-        #obtém a media e a mediana das distancias
-        mean, median = calculate_distances(points)
-
-        # Preenche o polígono com uma cor transparente
-        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.8)
-
-        # Marca o centróide no gráfico
-        ax.plot(centroid[0], centroid[1], '*', color='blue', markersize=15, label='Centroid')
-
-        # Adicionar as linhas de distância dos jogadores ao centróide
-        for point in points:
-            ax.plot([point[0], centroid[0]], [point[1], centroid[1]], 'g--', linewidth=1)
-
-        # Adicionar as distâncias no gráfico
-        for point, distance in zip(points, distances_to_centroid):
-            ax.text(point[0], point[1], f'{distance:.2f} m', fontsize=8, color='black')
-
-        ax.text(2, field["width"] - 2, f'Mean: {mean:.4f} m', fontsize=12, color='black',
-                bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f'Median: {median:.4f} m', fontsize=12, color='black',
-                bbox=dict(facecolor='white', alpha=0.7))
 
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
+
     return []
 
 # Create the animation
 #ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
 ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
-# = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=100)
+
 # Show the animation
 plt.grid(True)
 plt.show()
