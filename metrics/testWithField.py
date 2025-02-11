@@ -67,7 +67,7 @@ y_array = []
 # Function to update the plot for each frame
 def update(frame_number):
 
-    if frame_number == "17:48:00":
+    if frame_number == "18:00:00":
         heatmap, xedges, yedges = np.histogram2d(x_array, y_array, bins=[50, 50], range=[[0, 105], [0, 68]])
         heatmap = gaussian_filter(heatmap, sigma=1)  # Aplicar filtro gaussiano
 
@@ -101,7 +101,7 @@ def update(frame_number):
     for obj in objects:
         x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
         number_player = obj.get('player')
-        if number_player == '01':
+        if number_player == '06':
             x_array.append(x)
             y_array.append(y)
 
