@@ -1,9 +1,9 @@
 import json
 from geopy.distance import geodesic
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from scipy.spatial import ConvexHull
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -54,48 +54,64 @@ def init():
 
     return []
 
-# Function to update the plot for each frame
+
 def update(frame_number):
     ax.clear()
     init()
 
     objects = data[str(frame_number)]
 
-    points = []
+    attackers = []
+    midfielders = []
+    defenders = []
+    other_players = []
 
     for obj in objects:
         x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
-
-        ax.plot(x, y, 'o', color='red')
+        player_num = obj.get('player')
 
         if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
-            points.append([x, y])
+            ax.text(x, y, f"Player-{player_num}", fontsize=10, color='black', ha="left", va="bottom")
 
-    # Draw the polygon by connecting the dots inside the field using the Convex Hull
-    if len(points) > 2:
-        points = np.array(points)
-        hull = ConvexHull(points)
-        hull_points = points[hull.vertices]
+            if player_num in ["01", "02", "03"]:
+                attackers.append([x, y])
+                ax.plot(x, y, 'ro', label="Atacantes" if len(attackers) == 1 else "")  # Vermelho
+            elif player_num in ["04", "06", "10"]:
+                midfielders.append([x, y])
+                ax.plot(x, y, 'yo', label="Meia" if len(midfielders) == 1 else "")  # yellow
+            elif player_num in ["05", "07", "09"]:
+                defenders.append([x, y])
+                ax.plot(x, y, 'bo', label="Defensor" if len(defenders) == 1 else "")  # blue
+            else:
+                other_players.append([x, y])
+                ax.plot(x, y, 'go', label="Outros jogadores" if len(other_players) == 1 else "")  # Verde
 
-        polygon_area = hull.volume
 
-        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
+    def plot_convex_hull(players, color, label):
+        if len(players) > 2:
+            players = np.array(players)
+            hull = ConvexHull(players)
+            hull_points = players[hull.vertices]
 
-        width = np.max(hull_points[:, 0]) - np.min(hull_points[:, 0])
-        length = np.max(hull_points[:, 1]) - np.min(hull_points[:, 1])
-        lpwratio = length / width
+            centroid_x = np.mean(hull_points[:, 0])
+            centroid_y = np.mean(hull_points[:, 1])
 
-        ax.text(2, field["width"] - 2, f'Surface Area: {polygon_area:.2f} m²', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f'Width: {width:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 8, f'Length: {length:.2f} m', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 11, f'LPWRatio: {lpwratio:.2f}', fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.7))
+            ax.fill(hull_points[:, 0], hull_points[:, 1], color, alpha=0.2, label=label)
+            ax.plot(centroid_x, centroid_y, '^', color='black', markersize=7, label=f'Centroid {label}')
+        else: return
+
+    plot_convex_hull(attackers, 'red', "Área dos atacantes")
+    plot_convex_hull(midfielders, 'yellow', "Área dos meio-campistas")
+    plot_convex_hull(defenders, 'blue', "Área dos defensores")
+
+
+    ax.legend()
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
-
     return []
 
+
 # Create the animation
-#ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
-ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=100)
+ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=70)
 
 # Show the animation
 plt.grid(True)

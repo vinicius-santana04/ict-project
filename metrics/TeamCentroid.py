@@ -68,7 +68,7 @@ def update(frame_number):
 
         ax.plot(x, y, 'o', color='red')
 
-        if 0 <= x <= field["width"] and 0 <= y <= field["length"]:
+        if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
             points.append([x, y])
 
     # Calcula o polígono usando o ConvexHull

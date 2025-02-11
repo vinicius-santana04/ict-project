@@ -32,7 +32,7 @@ field["max_lon"] = max(longitudes)
 field["min_lon"] = min(longitudes)
 
 # Load your JSON data
-with open('../data/result.json') as f:
+with open('data/result.json') as f:
     data = json.load(f)
 
 def convert_to_field_coordinates(lat, lon, field):
@@ -69,7 +69,7 @@ def update(frame_number):
 
         ax.plot(x, y, 'o', color='red')
 
-        if 0 <= x <= field["width"] and 0 <= y <= field["length"]:
+        if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
             points.append([x, y])
 
 
@@ -84,15 +84,18 @@ def update(frame_number):
         centroid_y = np.mean(hull_points[:, 1])
 
         # Comprimento e largura do polígono (dimensões máximas)
-        dist_comp = np.max(hull_points[:, 0]) - np.min(hull_points[:, 0])
-        dist_larg = np.max(hull_points[:, 1]) - np.min(hull_points[:, 1])
+        width = np.max(hull_points[:, 0]) - np.min(hull_points[:, 0])
+        length = np.max(hull_points[:, 1]) - np.min(hull_points[:, 1])
 
         # Área do polígono com ConvexHull
         polygon_area = hull.volume
 
         # Desenha as bordas do polígono conectando os pontos do ConvexHull
-        for simplex in hull.simplices:
-            ax.plot(points[simplex, 0], points[simplex, 1], 'black', lw=1)
+        ax.plot(
+            np.append(hull_points[:, 0], hull_points[0, 0]),  # Adiciona o primeiro ponto no final (x-coordenadas)
+            np.append(hull_points[:, 1], hull_points[0, 1]),  # Adiciona o primeiro ponto no final (y-coordenadas)
+            color='black', lw=1
+        )
 
         # Marca o centróide no gráfico
         ax.plot(centroid_x, centroid_y, '*', color='blue', markersize=10, label='Centroid')
@@ -100,9 +103,9 @@ def update(frame_number):
         # Exibição das métricas no gráfico
         ax.text(2, field["width"] - 2, f"Área Média: {polygon_area:.2f} m²", fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 5, f"Comprimento Médio: {dist_comp:.2f} m", fontsize=12, color='black',
+        ax.text(2, field["width"] - 5, f"Comprimento Médio: {width:.2f} m", fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
-        ax.text(2, field["width"] - 8, f"Largura Média: {dist_larg:.2f} m", fontsize=12, color='black',
+        ax.text(2, field["width"] - 8, f"Largura Média: {length:.2f} m", fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
         ax.text(2, field["width"] - 11, f'Centroid: ({centroid_x:.2f}, {centroid_y:.2f})', fontsize=12, color='black',
                 bbox=dict(facecolor='white', alpha=0.7))
