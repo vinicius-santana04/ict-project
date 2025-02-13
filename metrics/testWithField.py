@@ -1,15 +1,13 @@
-from IPython.core.pylabtools import figsize
-from matplotlib.colors import LinearSegmentedColormap
-
 from fields import select_field
 import json
 from geopy.distance import geodesic
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from matplotlib.patches import Ellipse, Rectangle, Circle, Arc
 from scipy.ndimage import gaussian_filter
 from scipy.spatial import ConvexHull
 import numpy as np
+from matplotlib.colors import LogNorm
+from PIL import Image
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -67,9 +65,9 @@ y_array = []
 # Function to update the plot for each frame
 def update(frame_number):
 
-    if frame_number == "18:00:00":
+    if frame_number == "17:50:00":
         heatmap, xedges, yedges = np.histogram2d(x_array, y_array, bins=[50, 50], range=[[0, 105], [0, 68]])
-        heatmap = gaussian_filter(heatmap, sigma=1)  # Aplicar filtro gaussiano
+        heatmap = gaussian_filter(heatmap, sigma=0.8)  # Aplicar filtro gaussiano
 
         # Plotar o campo e o heatmap
         fig1, ax1 = plt.subplots(figsize=(10, 7))
@@ -80,11 +78,14 @@ def update(frame_number):
         #custom_cmap = LinearSegmentedColormap.from_list("custom", ["white", "yellow", "green"], N=256)
         #custom_cmap = plt.cm.get_cmap('YlOrRd')  # Escolha um colormap que se aproxime do desejado
         #custom_cmap.set_bad(alpha=1)
-        heatmap_img = ax1.imshow(heatmap.T, extent=extent, origin='lower', cmap='YlOrRd', vmin=0.1, vmax=1, alpha=0.8)
-        ax1.set_facecolor([0, 0.7, 0])
+        heatmap_img = ax1.imshow(heatmap.T, extent=extent, origin='lower', cmap='coolwarm',
+                            norm=LogNorm(vmin=0.01, vmax=np.max(heatmap)), alpha=0.8)
+        # save and edit the image
+        plt.savefig("heatmap.png", dpi=300, bbox_inches='tight', facecolor='white')
         # Show the animation
         plt.grid(True)
         plt.show()
+
         return [heatmap_img]
 
 
@@ -101,7 +102,7 @@ def update(frame_number):
     for obj in objects:
         x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
         number_player = obj.get('player')
-        if number_player == '06':
+        if number_player == '01':
             x_array.append(x)
             y_array.append(y)
 
