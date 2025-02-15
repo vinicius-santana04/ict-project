@@ -66,6 +66,7 @@ def update(frame_number):
     # Get players at this moment: frame_number
     players = data[str(frame_number)]
 
+    #Iter for Players at this moment
     for player in players:
         if player["player"] == "01":  # If the current player is "01"
             x, y = convert_to_field_coordinates(player.get('lat'), player.get('lon'), field)
@@ -77,7 +78,6 @@ def update(frame_number):
 
                 last_position = (player.get('lat'), player.get('lon'))
 
-
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
     ax.text(2, field["width"] - 2, f'Total_Distance Player01: {total_distance:.2f}meters', fontsize=12, color='black',
             bbox=dict(facecolor='white', alpha=0.7))
@@ -86,8 +86,9 @@ def update(frame_number):
 
 # Create the animation
 #ani = animation.FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, repeat=False, interval=1)
-ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=0.00001)
+ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repeat=False, interval=1)
 
 # Show the animation
 plt.grid(True)
 plt.show()
+ls
