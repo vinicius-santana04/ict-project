@@ -1,11 +1,12 @@
+from fields import select_field
 import json
 from geopy.distance import geodesic
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from matplotlib.patches import Ellipse, Rectangle, Circle, Arc
 from scipy.ndimage import gaussian_filter
 from scipy.spatial import ConvexHull
 import numpy as np
+from matplotlib.colors import LogNorm
 
 ## This code will be reused for all the metrics
 ## Move it to a different place later
@@ -59,59 +60,65 @@ def init():
 x_array = []
 y_array = []
 
+def getBiggestFrequency(xis, yos):
+    npx = np.array(xis)
+    npy = np.array(yos)
+    npx_round = np.round(npx, 2)
+    npy_round = np.round(npy, 2)
 
-def draw_pitch(ax=None):
-    if ax is None:
-        fig, ax = plt.subplots(figsize=(10, 7))
+    valuesx, counts = np.unique(npx_round, return_counts=True)
+    most_frequent_valuex = valuesx[np.argmax(counts)]
+    valuesy, counts = np.unique(npy_round, return_counts=True)
+    most_frequent_valuey = valuesy[np.argmax(counts)]
 
-    # Limites do campo
-    ax.set_xlim(0, 105)
-    ax.set_ylim(0, 68)
+    return most_frequent_valuex, most_frequent_valuey
 
-    # Linhas principais do campo
-    ax.add_patch(Rectangle((0, 0), 105, 68, edgecolor="white", facecolor="none", lw=2))
-    ax.add_patch(Rectangle((0, 22.65), 16.5, 22.7, edgecolor="white", facecolor="none", lw=2))
-    ax.add_patch(Rectangle((105 - 16.5, 22.65), 16.5, 22.7, edgecolor="white", facecolor="none", lw=2))
-    ax.add_patch(Circle((52.5, 34), 9.15, edgecolor="white", facecolor="none", lw=2))
-    ax.add_patch(Rectangle((0, 30.34), 5.5, 7.32, edgecolor="white", facecolor="none", lw=2))
-    ax.add_patch(Rectangle((105 - 5.5, 30.34), 5.5, 7.32, edgecolor="white", facecolor="none", lw=2))
-    ax.add_patch(Circle((52.5, 34), 0.2, edgecolor="white", facecolor="white", lw=2))
-    ax.add_patch(Arc((11, 34), height=18.3, width=18.3, theta1=308, theta2=52, color="white", lw=2))
-    ax.add_patch(Arc((105 - 11, 34), height=18.3, width=18.3, theta1=128, theta2=232, color="white", lw=2))
-
-    # Centro do campo
-    ax.add_patch(Circle((52.5, 34), 0.2, edgecolor="white", facecolor="white", lw=2))
-    ax.add_patch(Circle((52.5, 34), 9.15, edgecolor="white", facecolor="none", lw=2))
-    ax.set_facecolor("green")
-    return ax
+player_obj = "01"
+escalação_barcelona = {
+    '01': 'Koundé',
+    '02': 'Araujo',
+    '03': 'Iñigo',
+    '04': 'Balde',
+    '05': 'De Jong',
+    '06': 'Gavi',
+    '07': 'Yamal',
+    '08': 'Pedri',
+    '09': 'Lewandowski',
+    '10': 'Raphinha'
+}
 
 
 # Function to update the plot for each frame
 def update(frame_number):
 
     if frame_number == "18:00:00":
+        heatmap, xedges, yedges = np.histogram2d(x_array, y_array, bins=[50, 50], range=[[0, 105], [0, 68]])
+        heatmap = gaussian_filter(heatmap, sigma=0.8)  # Aplicar filtro gaussiano
+
+        # Plotar o campo e o heatmap
         fig1, ax1 = plt.subplots(figsize=(10, 7))
+        select_field(105, 71, ax1)
 
-        heatmap, xedges, yedges = np.histogram2d(x_array, y_array, bins=(50, 50))  # 50 bins em x e y
+        extent = [0, 105, 0, 71]
+        heatmap_img = ax1.imshow(heatmap.T, extent=extent, origin='lower', cmap='coolwarm',
+                            norm=LogNorm(vmin=0.01, vmax=np.max(heatmap)), alpha=0.8)
 
-        heatmap_image = ax1.pcolor(xedges, yedges, heatmap.T, cmap='viridis', shading='auto')
-        #fig1.colorbar(heatmap_image, ax=ax1, label='Frequência')  # Barra de cores com rótulo
-
-        ax1.set_xlim(0, 100)  # Define o eixo X a partir de 0
-        ax1.set_ylim(0, max(y_array))  # Define o eixo Y a partir de 0
-
-        plt.xlabel('Eixo X')
-        plt.ylabel('Eixo Y')
-        plt.title('Heatmap de Posições do Jogador')
+        #get the biggest frequency value on heatmap
+        x_max, y_max = getBiggestFrequency(x_array, y_array)
+        ax1.text(2, field["width"] - 2, f'ponto mais frequente: {x_max}, {y_max}', fontsize=12, color='black',
+                bbox=dict(facecolor='white', alpha=0.7))
+        # save the image
+        #plt.savefig("heatmap.png", dpi=300, bbox_inches='tight', facecolor='white')
+        # Show the animation
+        ax1.set_title(f"Mapa de calor do Player {escalação_barcelona.get(player_obj)}")
         plt.grid(True)
         plt.show()
-        return
 
+        return [heatmap_img]
 
     ax.clear()
+    select_field(105, 71, ax)
     init()
-
-
 
     objects = data[str(frame_number)]
 
@@ -120,12 +127,12 @@ def update(frame_number):
     for obj in objects:
         x, y = convert_to_field_coordinates(obj.get('lat'), obj.get('lon'), field)
         number_player = obj.get('player')
-        if number_player == '01':
+        if number_player == player_obj:
             x_array.append(x)
             y_array.append(y)
 
         ax.plot(x, y, 'o', color='red')
-        ax.text(x, y, ("Player-" + number_player), fontsize=10, color='black', ha="left", va="bottom")
+        ax.text(x, y, escalação_barcelona.get(number_player), fontsize=10, color='black', ha="left", va="bottom")
 
         if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
             points.append([x, y])
