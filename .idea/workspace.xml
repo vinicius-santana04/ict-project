@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1b2a62ed-2941-4168-8564-e3c5c527a5ab" name="Changes" comment="Correção">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ict-project.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TesTCompSectCentroid.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;viniciusantana04&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/viniciusantana04/ict-project.git&quot;,
+    &quot;accountId&quot;: &quot;fe7e8fe4-8faf-4cb0-96be-876e4eec9a8a&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2rflSOzi4SiriisG9jjZc5VZJPm" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.fields.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.teste.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Vinicius/PycharmProjects/ict-project&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Vinicius\PycharmProjects\ict-project" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Vinicius\PycharmProjects\ict-project\metrics" />
+      <recent name="C:\Users\Vinicius\PycharmProjects\ict-project\teste" />
+      <recent name="C:\Users\Vinicius\PycharmProjects\ict-project" />
+      <recent name="C:\Users\Vinicius\PycharmProjects\ict-project\data" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="fields" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ict-project" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fields.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.fields" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PY-243.23654.177" />
+        <option value="bundled-python-sdk-91d3a02ef49d-43b77aa2d136-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.23654.177" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1b2a62ed-2941-4168-8564-e3c5c527a5ab" name="Changes" comment="" />
+      <created>1736958009206</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1736958009206</updated>
+      <workItem from="1736958011112" duration="2129000" />
+      <workItem from="1736960776832" duration="162000" />
+      <workItem from="1736960945592" duration="507000" />
+      <workItem from="1736961467852" duration="428000" />
+      <workItem from="1736961983869" duration="1968000" />
+      <workItem from="1736977503454" duration="1686000" />
+      <workItem from="1736979830200" duration="675000" />
+      <workItem from="1737025184672" duration="726000" />
+      <workItem from="1737473451753" duration="7939000" />
+      <workItem from="1737589157706" duration="496000" />
+      <workItem from="1737590366933" duration="79000" />
+      <workItem from="1737590452643" duration="11000" />
+      <workItem from="1737591338375" duration="2137000" />
+      <workItem from="1737664760470" duration="712000" />
+      <workItem from="1737989648478" duration="9053000" />
+      <workItem from="1738071460835" duration="3005000" />
+      <workItem from="1738074999604" duration="656000" />
+      <workItem from="1738076739562" duration="911000" />
+      <workItem from="1738252893758" duration="911000" />
+      <workItem from="1738253902152" duration="2297000" />
+      <workItem from="1738257721883" duration="669000" />
+      <workItem from="1738334225308" duration="5081000" />
+      <workItem from="1738870761501" duration="4208000" />
+      <workItem from="1738945004787" duration="5208000" />
+      <workItem from="1739297972030" duration="885000" />
+      <workItem from="1739298944144" duration="367000" />
+      <workItem from="1739299540095" duration="84000" />
+      <workItem from="1739299675051" duration="181000" />
+      <workItem from="1739299862533" duration="56000" />
+      <workItem from="1739299923907" duration="39000" />
+      <workItem from="1739299967335" duration="66000" />
+    </task>
+    <task id="LOCAL-00001" summary="correção de bug">
+      <option name="closed" value="true" />
+      <created>1736978811211</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1736978811211</updated>
+    </task>
+    <task id="LOCAL-00002" summary="remoção de bibliotecas não utilizadas">
+      <option name="closed" value="true" />
+      <created>1736978882600</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1736978882600</updated>
+    </task>
+    <task id="LOCAL-00003" summary="removido algumas funções e renomeação">
+      <option name="closed" value="true" />
+      <created>1736979913548</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1736979913548</updated>
+    </task>
+    <task id="LOCAL-00004" summary="adicionado team_lenght_width_ratio_area_distgoal.py">
+      <option name="closed" value="true" />
+      <created>1737477936958</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1737477936958</updated>
+    </task>
+    <task id="LOCAL-00005" summary="adicionado team_spread.py">
+      <option name="closed" value="true" />
+      <created>1737481491731</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737481491731</updated>
+    </task>
+    <task id="LOCAL-00006" summary="remoção de linhas">
+      <option name="closed" value="true" />
+      <created>1738001800124</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1738001800124</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Correção de bug">
+      <option name="closed" value="true" />
+      <created>1738073342465</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1738073342465</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Adicionado arquivo teste de compsectcentroid">
+      <option name="closed" value="true" />
+      <created>1739298119316</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1739298119316</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Adicionado arquivo teste de compsectcentroid">
+      <option name="closed" value="true" />
+      <created>1739298588080</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1739298588080</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Correção da pasta">
+      <option name="closed" value="true" />
+      <created>1739299026776</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1739299026776</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Correção">
+      <option name="closed" value="true" />
+      <created>1739299142014</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1739299142014</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="correção de bug" />
+    <MESSAGE value="remoção de bibliotecas não utilizadas" />
+    <MESSAGE value="removido algumas funções e renomeação" />
+    <MESSAGE value="adicionado team_lenght_width_ratio_area_distgoal.py" />
+    <MESSAGE value="adicionado team_spread.py" />
+    <MESSAGE value="remoção de linhas" />
+    <MESSAGE value="Correção de bug" />
+    <MESSAGE value="Adicionado arquivo teste de compsectcentroid" />
+    <MESSAGE value="Correção da pasta" />
+    <MESSAGE value="Correção" />
+    <option name="LAST_COMMIT_MESSAGE" value="Correção" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ict_project$test.coverage" NAME="test Coverage Results" MODIFIED="1738000796464" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/teste" />
+    <SUITE FILE_PATH="coverage/ict_project$teste.coverage" NAME="teste Coverage Results" MODIFIED="1737999070039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/teste" />
+    <SUITE FILE_PATH="coverage/ict_project$fields.coverage" NAME="fields Coverage Results" MODIFIED="1738946146653" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>
