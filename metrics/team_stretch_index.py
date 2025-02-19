@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from itertools import combinations
 
+from scipy.stats import alpha
+
+from fields import select_field
+
 ## This code will be reused for all the metrics
 ## Move it to a different place later
 # Define your four corner points as (latitude, longitude)
@@ -65,6 +69,7 @@ def init():
 
 def update(frame_number):
     ax.clear()
+    select_field(105, 71, ax)
     init()
 
     objects = data[str(frame_number)]
@@ -76,7 +81,7 @@ def update(frame_number):
 
         ax.plot(x, y, 'o', color='red')
 
-        if 0 <= x <= field["width"] and 0 <= y <= field["length"]:
+        if 0 <= x <= field["length"] and 0 <= y <= field["width"]:
             points.append([x, y])
 
     # Calcula o polígono usando o ConvexHull
@@ -85,12 +90,16 @@ def update(frame_number):
         hull = ConvexHull(points)
         hull_points = points[hull.vertices]
 
+
         # Obtém o centróide do polígono e as distancias dos pontos ao centroid
         centroid = np.mean(points, axis=0)
         distances_to_centroid = [np.linalg.norm(point - centroid) for point in points]
 
+        #obtém a media e a mediana das distancias
+        mean, median = calculate_distances(points)
+
         # Preenche o polígono com uma cor transparente
-        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
+        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.8)
 
         # Marca o centróide no gráfico
         ax.plot(centroid[0], centroid[1], '*', color='blue', markersize=15, label='Centroid')
@@ -103,6 +112,10 @@ def update(frame_number):
         for point, distance in zip(points, distances_to_centroid):
             ax.text(point[0], point[1], f'{distance:.2f} m', fontsize=8, color='black')
 
+        ax.text(2, field["width"] - 2, f'Mean: {mean:.4f} m', fontsize=12, color='black',
+                bbox=dict(facecolor='white', alpha=0.7))
+        ax.text(2, field["width"] - 5, f'Median: {median:.4f} m', fontsize=12, color='black',
+                bbox=dict(facecolor='white', alpha=0.7))
 
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
     return []

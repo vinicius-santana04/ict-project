@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def select_field(length, width):
-    if length < 70:
+def select_field(length, width, ax=None):
+    if length < 0:
         pass
         # small_field(length, width)
     else:
-        big_field(length, width)
+        return big_field(length, width, ax)
 
 # def small_field(length, width):
 #     print("Executando small field")
@@ -76,7 +76,7 @@ def select_field(length, width):
 #
 #     plt.show()
 
-def big_field(length, width):
+def big_field(length, width, ax=None):
 
     print("Executando big field")
 
@@ -85,7 +85,8 @@ def big_field(length, width):
     comp, larg = length, width  # Dimensões do campo (comprimento x largura)
 
     # Configuração do gráfico
-    fig, ax = plt.subplots()
+    if ax is None:
+        fig, ax = plt.subplots()
     ax.set_facecolor(c)  # Define a cor de fundo do campo
     ax.set_xlim([-5, comp + 5])  # Limites do eixo X
     ax.set_ylim([-5, larg + 5])  # Limites do eixo Y
@@ -152,7 +153,10 @@ def big_field(length, width):
     ax.spines['bottom'].set_visible(False)
     ax.spines['left'].set_visible(False)
 
-    plt.show()
+    if ax is None:
+        plt.show()
+
+    return ax
 
 if __name__ == "__main__":
     select_field(104, 70)
