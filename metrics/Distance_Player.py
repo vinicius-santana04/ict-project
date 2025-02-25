@@ -1,3 +1,4 @@
+from field import select_field
 import json
 from geopy.distance import geodesic
 import matplotlib.pyplot as plt
@@ -42,6 +43,8 @@ def convert_to_field_coordinates(lat, lon, field):
 # Create a figure and axis
 fig, ax = plt.subplots(figsize=(10, 7))
 
+#Input with you player
+
 #Global Variable by storage distance in meters
 total_distance = 0.0
 #Tuple by storage last position (gps)
@@ -53,6 +56,7 @@ def init():
     ax.set_ylim(0, field["width"])
     ax.set_xlabel('X Position (meters)')
     ax.set_ylabel('Y Position (meters)')
+    select_field(105, 71, ax)
 
     return []
 
@@ -61,7 +65,6 @@ def update(frame_number):
 
     global last_position
     global total_distance
-    init()
 
     # Get players at this moment: frame_number
     players = data[str(frame_number)]
@@ -74,9 +77,11 @@ def update(frame_number):
                 if last_position != ():
                     total_distance +=  geodesic(last_position, (player.get('lat'), player.get('lon'))).meters
                     last_x, last_y = convert_to_field_coordinates(last_position[0], last_position[1], field)
-                    ax.plot([last_x, x], [last_y, y], 'k-', color='red')
+                    ax.plot([last_x, x], [last_y, y], linestyle='-', color='red')
 
                 last_position = (player.get('lat'), player.get('lon'))
+            else:
+                    last_position = ()
 
     ax.set_title(f"Football Field with Tracked Object Positions - Frame {frame_number}")
     ax.text(2, field["width"] - 2, f'Total_Distance Player01: {total_distance:.2f}meters', fontsize=12, color='black',
@@ -91,4 +96,4 @@ ani = animation.FuncAnimation(fig, update, data, init_func=init, blit=True, repe
 # Show the animation
 plt.grid(True)
 plt.show()
-ls
+
