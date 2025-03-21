@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+from fields import select_field
+
 ## This code will be reused for all the metrics
 ## Move it to a different place later
 # Define your four corner points as (latitude, longitude)
@@ -52,6 +54,8 @@ def init():
     ax.set_ylabel('Y Position (meters)')
     ax.set_title('Football Field with Tracked Object Positions')
 
+    select_field(105, 71, ax)
+
     return []
 
 
@@ -85,7 +89,7 @@ def update(frame_number):
         centroid_y = np.mean(hull_points[:, 1])
 
         # Preenche o polígono com uma cor transparente
-        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.2)
+        ax.fill(hull_points[:, 0], hull_points[:, 1], 'orange', alpha=0.5)
 
         # Marca o centróide no gráfico
         ax.plot(centroid_x, centroid_y, '*', color='blue', markersize=10, label='Centroid')
