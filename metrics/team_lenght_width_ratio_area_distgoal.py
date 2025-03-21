@@ -32,7 +32,7 @@ field["max_lon"] = max(longitudes)
 field["min_lon"] = min(longitudes)
 
 # Load your JSON data
-with open('data/result.json') as f:
+with open('../data/result.json') as f:
     data = json.load(f)
 
 def convert_to_field_coordinates(lat, lon, field):
