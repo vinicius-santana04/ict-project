@@ -93,17 +93,16 @@ def update(frame_number):
     def plot_convex_hull(players, color, label):
         if len(players) > 2:
             players = np.array(players)
-            players = np.unique(playes, axis=0)
+            players = np.unique(players, axis=0)
 
-	    if len(players) > 2:
-            	hull = ConvexHull(players)
-            	hull_points = players[hull.vertices]
+            if len(players) > 2:
+                hull = ConvexHull(players)
+                hull_points = players[hull.vertices]
+                centroid_x = np.mean(hull_points[:, 0])
+                centroid_y = np.mean(hull_points[:, 1])
 
-            	centroid_x = np.mean(hull_points[:, 0])
-            	centroid_y = np.mean(hull_points[:, 1])
-
-            	ax.fill(hull_points[:, 0], hull_points[:, 1], color, alpha=0.5, label=label)
-            	ax.plot(centroid_x, centroid_y, '^', color='black', markersize=7, label=f'Centroid {label}')
+                ax.fill(hull_points[:, 0], hull_points[:, 1], color, alpha=0.5, label=label)
+                ax.plot(centroid_x, centroid_y, '^', color='black', markersize=7, label=f'Centroid {label}')
         #else: return
 
     plot_convex_hull(attackers, 'red', "Área dos atacantes")
