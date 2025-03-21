@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from fields import select_field
+
 ## This code will be reused for all the metrics
 ## Move it to a different place later
 # Define your four corner points as (latitude, longitude)
